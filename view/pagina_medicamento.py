@@ -10,14 +10,33 @@ def pagina_medicamento(page: ft.Page, pagina_inicial, pagina_estoque, pagina_rel
         page.clean()
         pagina_inicial(page, pagina_medicamento, pagina_estoque, pagina_relatorio)  # Passa todas as páginas incluindo 'pagina_relatorio'
 
+<<<<<<< HEAD
+    # Borda azul com o título
+    title_container = ft.Container(
+        content=ft.Text("Cadastro de Medicamentos", size=24, weight="bold", color="white"),
+=======
     # Variável para o título com borda azul
     titulo_pagina = ft.Text("Cadastro de Medicamentos", size=24, weight="bold", color="white")
     title_container = ft.Container(
         content=titulo_pagina,
+>>>>>>> task-atualizacao-interface
         bgcolor="#2e3bc8",
         padding=ft.padding.all(10)
     )
 
+<<<<<<< HEAD
+    # Formulário de cadastro
+    formulario = ft.Column(
+        controls=[
+            ft.TextField(label="Nome do Medicamento", width=300, bgcolor="white"),
+            ft.TextField(label="Lote", width=300, bgcolor="white"),
+            ft.TextField(label="Validade", width=300, bgcolor="white"),
+            ft.TextField(label="Código de Barras", width=300, bgcolor="white"),
+            ft.TextField(label="Laboratório", width=300, bgcolor="white"),
+            ft.TextField(label="Quantidade", width=300, bgcolor="white"),
+            ft.ElevatedButton("Cadastrar", bgcolor="#2e3bc8", color="white"),
+            ft.ElevatedButton("Voltar", on_click=voltar_para_inicial, bgcolor="#2e3bc8", color="white"),
+=======
     # Variáveis para os campos do formulário
     campo_nome_medicamento = ft.TextField(label="Nome do Medicamento", width=300, bgcolor="white")
     campo_lote = ft.TextField(label="Lote", width=300, bgcolor="white")
@@ -41,6 +60,7 @@ def pagina_medicamento(page: ft.Page, pagina_inicial, pagina_estoque, pagina_rel
             campo_quantidade,
             botao_cadastrar,
             botao_voltar,
+>>>>>>> task-atualizacao-interface
         ],
         alignment=ft.MainAxisAlignment.CENTER,
         spacing=10,
