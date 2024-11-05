@@ -27,4 +27,8 @@ def login_page(page: ft.Page, pagina_inicial, pagina_medicamento, pagina_estoque
 def entrar_clicked(e, page, pagina_inicial, pagina_medicamento, pagina_estoque, pagina_relatorio):  # Adiciona 'pagina_relatorio'
     # Aqui você pode adicionar a lógica de verificação do login
     page.clean()
+<<<<<<< HEAD
     pagina_inicial(page, pagina_medicamento, pagina_estoque, pagina_relatorio)  # Passa 'pagina_relatorio'
+=======
+    pagina_inicial(page, pagina_medicamento, pagina_estoque, pagina_relatorio)  # Passa 'pagina_relatorio'
+>>>>>>> task-atualizacao-interface
