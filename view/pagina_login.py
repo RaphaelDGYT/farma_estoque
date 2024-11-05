@@ -1,27 +1,30 @@
 import flet as ft
-from pagina_inicial import pagina_inicial  # Importando a função corretamente
 
-def login_page(page: ft.Page):
+def login_page(page: ft.Page, pagina_inicial, pagina_medicamento, pagina_estoque, pagina_relatorio):  # Adiciona 'pagina_relatorio'
     page.title = "Login - Controle de Medicamentos"
-    page.bgcolor = "#ff3a3a"  # Define a cor de fundo da página como vermelho
+    page.bgcolor = "#ff3a3a"
 
-    # Cria um contêiner para centralizar o conteúdo
     login_container = ft.Column(
         controls=[
-            ft.Text("Login", size=30, weight="bold", color="white"),  # Título da página
-            ft.TextField(label="Usuário", width=300),  # Campo do usuário
-            ft.TextField(label="Senha", password=True, width=300),  # senha
-            ft.ElevatedButton("Entrar", on_click=lambda e: entrar_clicked(e, page))  # botão entrar
+            ft.Text("Login", size=30, weight="bold", color="white"),
+            ft.TextField(label="Usuário", width=300),
+            ft.TextField(label="Senha", password=True, width=300),
+            ft.ElevatedButton("Entrar", on_click=lambda e: entrar_clicked(e, page, pagina_inicial, pagina_medicamento, pagina_estoque, pagina_relatorio))  # Passa 'pagina_relatorio'
         ],
         alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        spacing=10,  # Espaçamento entre os controles
+        spacing=10
     )
 
-    # Adiciona o contêiner à página
-    page.add(login_container)
+    page.add(ft.Container(
+        content=login_container,
+        alignment=ft.Alignment(0, 0),
+        padding=20,
+        height=page.window_height,
+        width=page.window_width
+    ))
 
-def entrar_clicked(e, page):
-    # Aqui é pra adicionar a lógica do login para verificar se vai logar ou não
-    page.clean()  # Limpa a página de login
-    pagina_inicial(page)  # Direciona para a página principal após o login
+def entrar_clicked(e, page, pagina_inicial, pagina_medicamento, pagina_estoque, pagina_relatorio):  # Adiciona 'pagina_relatorio'
+    # Aqui você pode adicionar a lógica de verificação do login
+    page.clean()
+    pagina_inicial(page, pagina_medicamento, pagina_estoque, pagina_relatorio)  # Passa 'pagina_relatorio'

@@ -1,24 +1,34 @@
-import flet as ft  # para o flet funcionar
 
-# Função da página principal
-def pagina_inicial(page: ft.Page):
+import flet as ft
+
+def pagina_inicial(page: ft.Page, pagina_medicamento, pagina_estoque, pagina_relatorio):  # Adiciona 'pagina_relatorio'
     page.title = "Página Inicial - Controle de Medicamentos"
-    page.bgcolor = "#ff3a3a"  # cor vermelha
+    page.bgcolor = "#ff3a3a"
     page.padding = 0
     page.scroll = "adaptive"
-    
-    # centralizar
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
-    # Barra azul
+    # Função para ir à página de estoque
+    def ir_para_estoque(e):
+        page.clean()
+        pagina_estoque(page, pagina_inicial, pagina_medicamento, pagina_relatorio)  # Passa 'pagina_relatorio'
+
+    # Função para ir à página de medicamentos
+    def ir_para_medicamento(e):
+        page.clean()
+        pagina_medicamento(page, pagina_inicial, pagina_estoque, pagina_relatorio)  # Passa 'pagina_relatorio'
+
+    # Função para ir à página de relatório
+    def ir_para_relatorio(e):
+        page.clean()
+        pagina_relatorio(page, pagina_inicial, pagina_medicamento, pagina_estoque)  # Passa as páginas necessárias
+
+    # Navbar com botões de navegação
     navbar = ft.Container(
         content=ft.Row(
             controls=[
-                ft.Icon(ft.icons.HOME, color="white"),
-                ft.Text("ESTOQUE", style=ft.TextStyle(color="white")),
-                ft.Text("MEDICAMENTO", style=ft.TextStyle(color="white")),
-                ft.Text("RELATÓRIO", style=ft.TextStyle(color="white")),
+                ft.ElevatedButton("ESTOQUE", on_click=ir_para_estoque, bgcolor="#2e3bc8", color="white"),
+                ft.ElevatedButton("MEDICAMENTO", on_click=ir_para_medicamento, bgcolor="#2e3bc8", color="white"),
+                ft.ElevatedButton("RELATÓRIO", on_click=ir_para_relatorio, bgcolor="#2e3bc8", color="white"),
             ],
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
             height=50
@@ -27,7 +37,7 @@ def pagina_inicial(page: ft.Page):
         padding=0
     )
 
-    # os AVISOS
+    # Avisos
     avisos = ft.Container(
         content=ft.Column(
             controls=[
@@ -42,14 +52,14 @@ def pagina_inicial(page: ft.Page):
         padding=ft.padding.all(200)
     )
 
-    # RESUMO DIARIO
+    # Resumo diário
     resumo_diario = ft.Container(
         content=ft.Column(
             controls=[
                 ft.Text("RESUMO DIÁRIO", size=20, weight="bold", color="white"),
-                ft.ElevatedButton(" NOVOS MEDICAMENTOS", width=300),
-                ft.ElevatedButton(" RETIRADA DE MEDICAMENTOS", width=300),
-                ft.ElevatedButton(" NOVOS LOTES", width=300)
+                ft.ElevatedButton("NOVOS MEDICAMENTOS", width=300),
+                ft.ElevatedButton("RETIRADA DE MEDICAMENTOS", width=300),
+                ft.ElevatedButton("NOVOS LOTES", width=300)
             ],
             alignment=ft.MainAxisAlignment.END,
             spacing=5
@@ -65,6 +75,6 @@ def pagina_inicial(page: ft.Page):
         expand=True
     )
 
-    # Adicionar elementos à página
+    # Adiciona navbar e layout principal à página
     page.add(navbar)
     page.add(layout_principal)
