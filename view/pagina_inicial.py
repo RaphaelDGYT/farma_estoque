@@ -1,8 +1,11 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import flet as ft
 
 =======
 
+=======
+>>>>>>> 44f455b167b45cc4021d34cbe7034e5b7bcc9c8c
 import flet as ft
 
 >>>>>>> task-atualizacao-interface
@@ -27,6 +30,11 @@ def pagina_inicial(page: ft.Page, pagina_medicamento, pagina_estoque, pagina_rel
         page.clean()
         pagina_relatorio(page, pagina_inicial, pagina_medicamento, pagina_estoque)  # Passa as páginas necessárias
 
+    # Função para desligar o sistema
+    def desligar_sistema(e, page):
+        # Lógica de desligamento do sistema, se necessário
+        page.window_close()  # Fechar a janela da aplicação corretamente
+
     # Navbar com botões de navegação
     navbar = ft.Container(
         content=ft.Row(
@@ -34,6 +42,7 @@ def pagina_inicial(page: ft.Page, pagina_medicamento, pagina_estoque, pagina_rel
                 ft.ElevatedButton("ESTOQUE", on_click=ir_para_estoque, bgcolor="#2e3bc8", color="white"),
                 ft.ElevatedButton("MEDICAMENTO", on_click=ir_para_medicamento, bgcolor="#2e3bc8", color="white"),
                 ft.ElevatedButton("RELATÓRIO", on_click=ir_para_relatorio, bgcolor="#2e3bc8", color="white"),
+                ft.ElevatedButton("SAIR", on_click=lambda e: desligar_sistema(e, page), bgcolor="#ff0000", color="white"),  # Botão para sair
             ],
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
             height=50
@@ -60,7 +69,7 @@ def pagina_inicial(page: ft.Page, pagina_medicamento, pagina_estoque, pagina_rel
     # Resumo diário
     resumo_diario = ft.Container(
         content=ft.Column(
-            controls=[
+            controls=[ 
                 ft.Text("RESUMO DIÁRIO", size=20, weight="bold", color="white"),
                 ft.ElevatedButton("NOVOS MEDICAMENTOS", width=300),
                 ft.ElevatedButton("RETIRADA DE MEDICAMENTOS", width=300),
