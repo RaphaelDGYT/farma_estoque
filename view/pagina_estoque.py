@@ -14,7 +14,6 @@ def pagina_estoque(page: ft.Page, pagina_inicial, pagina_medicamento, pagina_rel
     page.title = "Gerenciamento de Estoque"
     page.bgcolor = "#ff3a3a"
     page.padding = 0
-    page.scroll = "adaptive"
 
     def voltar_para_inicial(e):
         page.clean()
@@ -42,8 +41,8 @@ def pagina_estoque(page: ft.Page, pagina_inicial, pagina_medicamento, pagina_rel
     def atualizar_tabela():
         tabela_medicamentos.rows = [
             ft.DataRow(
-                cells=[
-                    ft.DataCell(ft.Text(codigo, color="white")),  # Texto em branco
+                cells=[ 
+                    ft.DataCell(ft.Text(codigo, color="white")), 
                     ft.DataCell(ft.Text(dados["nome"], color="white")),
                     ft.DataCell(ft.Text(str(dados["quantidade"]), color="white"))
                 ]
@@ -67,21 +66,24 @@ def pagina_estoque(page: ft.Page, pagina_inicial, pagina_medicamento, pagina_rel
     botao_excluir = ft.ElevatedButton("Excluir Estoque", on_click=excluir_estoque, bgcolor="#2e3bc8", color="white")
     botao_voltar = ft.ElevatedButton("Voltar", on_click=voltar_para_inicial, bgcolor="#2e3bc8", color="white")
 
-    # Tabela de medicamentos em branco
+    # Tabela de medicamentos com scroll em ListView, dentro de um Container com bgcolor
     tabela_medicamentos = ft.DataTable(
         columns=[
-            ft.DataColumn(label=ft.Text("Código", color="white")),  # Texto das colunas em branco
+            ft.DataColumn(label=ft.Text("Código", color="white")), 
             ft.DataColumn(label=ft.Text("Nome", color="white")),
             ft.DataColumn(label=ft.Text("Quantidade", color="white"))
         ],
         rows=[],  # Inicialmente sem dados para mostrar em branco
     )
 
-    # Contêiner da tabela
+    # Coloque o ListView em um Container para aplicar o bgcolor
     tabela_container = ft.Container(
-        content=tabela_medicamentos,
-        width=400,
-        alignment=ft.Alignment(-1, 0)
+        content=ft.ListView(
+            controls=[tabela_medicamentos],
+            width=400,
+            height=300,  # Define a altura para limitar o tamanho da área da tabela
+        ),
+        bgcolor="#3e3e3e"
     )
 
     # Formulário com campos e botões
@@ -89,7 +91,7 @@ def pagina_estoque(page: ft.Page, pagina_inicial, pagina_medicamento, pagina_rel
         controls=[
             campo_codigo,
             botao_buscar,
-            ft.Text("Nome do Medicamento:", size=16, color="white"),  # Texto em branco
+            ft.Text("Nome do Medicamento:", size=16, color="white"), 
             campo_quantidade,
             botao_alterar,
             botao_excluir,

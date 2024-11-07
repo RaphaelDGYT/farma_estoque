@@ -20,6 +20,7 @@ def pagina_medicamento(page: ft.Page, pagina_inicial, pagina_estoque, pagina_rel
 
     # Variáveis para os campos do formulário
     campo_nome_medicamento = ft.TextField(label="Nome do Medicamento", width=300, bgcolor="white")
+    campo_ms_medicamento =  ft.TextField (label="Registro MS", width=300, bgcolor="white")
     campo_lote = ft.TextField(label="Lote", width=300, bgcolor="white")
     campo_validade = ft.TextField(label="Validade", width=300, bgcolor="white")
     campo_codigo_barras = ft.TextField(label="Código de Barras", width=300, bgcolor="white")
@@ -34,6 +35,7 @@ def pagina_medicamento(page: ft.Page, pagina_inicial, pagina_estoque, pagina_rel
     formulario = ft.Column(
         controls=[
             campo_nome_medicamento,
+            campo_ms_medicamento,
             campo_lote,
             campo_validade,
             campo_codigo_barras,
