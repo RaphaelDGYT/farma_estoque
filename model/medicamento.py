@@ -8,7 +8,7 @@ def cadastrar_medicamento(descricao, laboratorio, lista_adendo, lote, reg_ms, va
         banco = DB()
         cursor = banco.conexao_db()
 
-        cursor.execute("SELECT * FROM medicamento WHERE reg_ms = %s AND cod_barras = %s", (reg_ms, cod_barras))
+        cursor.execute("SELECT * FROM medicamento WHERE reg_ms = %s", [reg_ms])
         verifica = cursor.fetchall()
 
         if verifica:
