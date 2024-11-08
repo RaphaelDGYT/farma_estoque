@@ -1,14 +1,5 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 import flet as ft
 
-=======
-
-=======
->>>>>>> 44f455b167b45cc4021d34cbe7034e5b7bcc9c8c
-import flet as ft
-
->>>>>>> task-atualizacao-interface
 def pagina_inicial(page: ft.Page, pagina_medicamento, pagina_estoque, pagina_relatorio):  # Adiciona 'pagina_relatorio'
     page.title = "Página Inicial - Controle de Medicamentos"
     page.bgcolor = "#ff3a3a"
