@@ -7,7 +7,6 @@ def cadastrar_medicamento(descricao, laboratorio, lista_adendo, lote, reg_ms, va
         validade = validade.strftime('%Y-%m-%d')
         banco = DB()
         cursor = banco.conexao_db()
-
         cursor.execute("SELECT * FROM medicamento WHERE reg_ms = %s", [reg_ms])
         verifica = cursor.fetchall()
 
