@@ -1,6 +1,8 @@
-from config import DB
+import os
+import sys
 import mysql.connector as mysql
-
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+from config import DB
 
 def retirar_medicamento(reg_ms=None, cod_barras=None, quantidade=1):
     if reg_ms is None and cod_barras is None:

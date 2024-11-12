@@ -1,6 +1,9 @@
-from config import DB
+import os
+import sys
 import mysql.connector as mysql
 from datetime import datetime
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+from config import DB
 
 def cadastrar_medicamento(descricao, laboratorio, lista_adendo, lote, reg_ms, validade, cod_barras, estoque=1):
     try:

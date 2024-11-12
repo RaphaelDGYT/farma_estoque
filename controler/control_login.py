@@ -1,3 +1,6 @@
+import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from config import DB
 
 def valida_usuario(solicitacao=list()):
