@@ -7,8 +7,8 @@ def login_page(page: ft.Page, pagina_inicial, pagina_medicamento, pagina_estoque
     login_container = ft.Column(
         controls=[
             ft.Text("Login", size=30, weight="bold", color="white"),
-            ft.TextField(label="Usuário", width=300),
-            ft.TextField(label="Senha", password=True, width=300),
+            ft.TextField(label="Usuário", width=300,bgcolor="white"),
+            ft.TextField(label="Senha", password=True, width=300,bgcolor="white"),
             ft.ElevatedButton("Entrar", on_click=lambda e: entrar_clicked(e, page, pagina_inicial, pagina_medicamento, pagina_estoque, pagina_relatorio))  # Passa 'pagina_relatorio'
         ],
         alignment=ft.MainAxisAlignment.CENTER,
