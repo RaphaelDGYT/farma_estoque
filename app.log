@@ -1,0 +1,45 @@
+2024-11-16 22:32:05,998 - ERROR - Future exception was never retrieved
+future: <Future finished exception=AttributeError("module 'flet' has no attribute 'DropdownOption'")>
+Traceback (most recent call last):
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Daniel Neri\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flet_core\page.py", line 944, in wrapper
+    handler(*args)
+  File "e:\Users\Daniel Neri\Desktop\farma_estoque\view\pagina_inicial.py", line 12, in ir_para_estoque
+    pagina_estoque(page, pagina_inicial, pagina_medicamento, pagina_relatorio)  # Passa 'pagina_relatorio'
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "e:\Users\Daniel Neri\Desktop\farma_estoque\view\pagina_estoque.py", line 178, in pagina_estoque
+    options=[ft.DropdownOption("Maior que"), ft.DropdownOption("Menor que")],
+             ^^^^^^^^^^^^^^^^^
+AttributeError: module 'flet' has no attribute 'DropdownOption'
+2024-11-16 22:32:30,319 - ERROR - Future exception was never retrieved
+future: <Future finished exception=AttributeError("module 'flet' has no attribute 'DropdownOption'")>
+Traceback (most recent call last):
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Daniel Neri\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flet_core\page.py", line 944, in wrapper
+    handler(*args)
+  File "e:\Users\Daniel Neri\Desktop\farma_estoque\view\pagina_inicial.py", line 12, in ir_para_estoque
+    pagina_estoque(page, pagina_inicial, pagina_medicamento, pagina_relatorio)  # Passa 'pagina_relatorio'
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "e:\Users\Daniel Neri\Desktop\farma_estoque\view\pagina_estoque.py", line 178, in pagina_estoque
+    options=[ft.DropdownOption("Maior que"), ft.DropdownOption("Menor que")],
+             ^^^^^^^^^^^^^^^^^
+AttributeError: module 'flet' has no attribute 'DropdownOption'
+2024-11-16 22:35:13,439 - ERROR - Future exception was never retrieved
+future: <Future finished exception=AttributeError("module 'flet' has no attribute 'DropdownOption'")>
+Traceback (most recent call last):
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Daniel Neri\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\flet_core\page.py", line 944, in wrapper
+    handler(*args)
+  File "e:\Users\Daniel Neri\Desktop\farma_estoque\view\pagina_inicial.py", line 12, in ir_para_estoque
+    pagina_estoque(page, pagina_inicial, pagina_medicamento, pagina_relatorio)  # Passa 'pagina_relatorio'
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "e:\Users\Daniel Neri\Desktop\farma_estoque\view\pagina_estoque.py", line 178, in pagina_estoque
+    options=[ft.DropdownOption("Maior que"), ft.DropdownOption("Menor que")],
+             ^^^^^^^^^^^^^^^^^
+AttributeError: module 'flet' has no attribute 'DropdownOption'
