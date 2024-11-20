@@ -7,7 +7,10 @@ from config import DB
 
 def cadastrar_medicamento(descricao, laboratorio, lista_adendo, lote, reg_ms, validade, cod_barras, estoque=1):
     try:
-        validade = validade.strftime('%Y-%m-%d')
+        # Verifica se a validade já é string, caso contrário, converte para o formato correto
+        if isinstance(validade, datetime):
+            validade = validade.strftime('%Y-%m-%d')
+        
         banco = DB()
         cursor = banco.conexao_db()
         cursor.execute("SELECT * FROM medicamento WHERE reg_ms = %s", [reg_ms])
@@ -22,7 +25,8 @@ def cadastrar_medicamento(descricao, laboratorio, lista_adendo, lote, reg_ms, va
                 (descricao, laboratorio, lista_adendo, lote, reg_ms, validade, cod_barras, estoque))
             banco.conn.commit()
         return True
-    except mysql.Error:
+    except mysql.Error as err:
+        print(f"Erro ao cadastrar medicamento: {err}")
         return False
     finally:
         banco.fechar_conexao()

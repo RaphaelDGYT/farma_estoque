@@ -1,4 +1,5 @@
 import flet as ft
+from config import DB  # Importando a classe DB corretamente
 
 def pagina_relatorio(page: ft.Page, pagina_inicial, pagina_medicamento, pagina_estoque):
     page.title = "Relatório"
@@ -12,27 +13,45 @@ def pagina_relatorio(page: ft.Page, pagina_inicial, pagina_medicamento, pagina_e
         alignment=ft.MainAxisAlignment.CENTER,
     )
 
-    # Adicione elementos de relatório aqui, como gráficos e tabelas
+    # Função para carregar os medicamentos para o relatório
+    def carregar_medicamentos_relatorio():
+        try:
+            banco = DB()  # Instanciando a classe DB corretamente
+            cursor = banco.conexao_db()
+            cursor.execute("SELECT * FROM medicamento")  # Carrega todos os medicamentos
+            resultados = cursor.fetchall()
+
+            banco.fechar_conexao()
+
+            # Limpa as linhas da tabela de medicamentos
+            tabela.rows.clear()
+            for resultado in resultados:
+                # Preenche a tabela com os dados dos medicamentos
+                tabela.rows.append(ft.DataRow(cells=[
+                    ft.DataCell(ft.Text(str(resultado[5]), color="white")),  # Código de barras
+                    ft.DataCell(ft.Text(resultado[1], color="white")),       # Nome do Medicamento
+                    ft.DataCell(ft.Text(resultado[2], color="white")),       # Classe Terapêutica
+                    ft.DataCell(ft.Text(resultado[3], color="white")),       # Lote
+                    ft.DataCell(ft.Text(resultado[4], color="white")),       # Validade
+                    ft.DataCell(ft.Text(str(resultado[8]), color="white")),  # Quantidade
+                ]))
+
+            page.update()  # Atualiza a página para refletir as mudanças na tabela
+
+        except mysql.Error as e:
+            print(f"Erro ao carregar medicamentos para o relatório: {e}")
+
+    # Tabela para mostrar os medicamentos
     tabela = ft.DataTable(
         columns=[
-            ft.DataColumn(ft.Text("Código de Barras")),
-            ft.DataColumn(ft.Text("Nome do Medicamento")),  # Nova coluna para o nome do medicamento
-            ft.DataColumn(ft.Text("Classe Terapêutica")),
-            ft.DataColumn(ft.Text("Lote")),
-            ft.DataColumn(ft.Text("Validade")),
-            ft.DataColumn(ft.Text("Quantidade")),
+            ft.DataColumn(ft.Text("Código de Barras", color="white")),
+            ft.DataColumn(ft.Text("Nome do Medicamento", color="white")),
+            ft.DataColumn(ft.Text("Classe Terapêutica", color="white")),
+            ft.DataColumn(ft.Text("Lote", color="white")),
+            ft.DataColumn(ft.Text("Validade", color="white")),
+            ft.DataColumn(ft.Text("Quantidade", color="white")),
         ],
-        rows=[
-            ft.DataRow(cells=[
-                ft.DataCell(ft.Text("1234567890123")),
-                ft.DataCell(ft.Text("Amoxicilina")),  # Exemplo de nome do medicamento
-                ft.DataCell(ft.Text("Antibiótico")),
-                ft.DataCell(ft.Text("ABC123")),
-                ft.DataCell(ft.Text("2025-12-31")),
-                ft.DataCell(ft.Text("50")),
-            ]),
-            # Adicione mais linhas conforme necessário
-        ],
+        rows=[],  # Inicialmente sem dados
     )
 
     # Botões para exportar e voltar
@@ -48,6 +67,9 @@ def pagina_relatorio(page: ft.Page, pagina_inicial, pagina_medicamento, pagina_e
 
     # Adicionando todos os elementos à página
     page.add(header, tabela, controls)
+
+    # Carregar medicamentos no relatório ao iniciar
+    carregar_medicamentos_relatorio()
 
 def exportar_pdf(page):
     print("Exportando PDF...")
