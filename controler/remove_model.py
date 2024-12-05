@@ -18,6 +18,7 @@ def retirar_medicamento(reg_ms=None, cod_barras=None, quantidade=1):
                 if estoque >= quantidade:
                     cursor.execute("UPDATE medicamento SET estoque = estoque - %s WHERE cod_barras = %s", (quantidade, cod_barras))
                     banco.conn.commit()
+                    Movimentacao(id=id).registro_saida(quantidade)
                     return True
                 else:
                     return 2 # 2 representa que a quantidade é maior que o próprio estoque

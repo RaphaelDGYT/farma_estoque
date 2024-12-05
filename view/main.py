@@ -9,4 +9,4 @@ def main(page: ft.Page):
     # Chama a função login_page com todas as páginas necessárias
     login_page(page, pagina_inicial, pagina_medicamento, pagina_estoque, pagina_relatorio)  # Adiciona 'pagina_relatorio'
 
-ft.app(target=main)
+ft.app(target=main) 

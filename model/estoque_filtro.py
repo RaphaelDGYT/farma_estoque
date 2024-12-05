@@ -4,7 +4,7 @@ import pandas as pd
 import datetime as datetime
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from config import DB
-from relatorio import Relatorio
+from .relatorio import Relatorio
 
 class Estoque(Relatorio):
     def __init__(self):

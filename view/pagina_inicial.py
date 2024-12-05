@@ -64,7 +64,7 @@ def pagina_inicial(page: ft.Page, pagina_medicamento, pagina_estoque, pagina_rel
                 ft.Text("RESUMO DIÁRIO", size=20, weight="bold", color="white"),
                 ft.ElevatedButton("NOVOS MEDICAMENTOS", width=300),
                 ft.ElevatedButton("RETIRADA DE MEDICAMENTOS", width=300),
-                ft.ElevatedButton("NOVOS LOTES", width=300)
+                ft.ElevatedButton("TODAS MOVIMENTAÇÕES", width=300)
             ],
             alignment=ft.MainAxisAlignment.END,
             spacing=5

@@ -142,3 +142,4 @@ class RelatorioExcel(Relatorio):
             return True
         except Exception:
             return False
+RelatorioExcel().salvar_planilha()

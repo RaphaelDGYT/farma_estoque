@@ -47,7 +47,7 @@ def pagina_medicamento(page: ft.Page, pagina_inicial, pagina_estoque, pagina_rel
             # Chama a função de cadastro
             sucesso = cadastrar_medicamento(descricao, laboratorio, lista_adendo, lote, reg_ms, validade, cod_barras, estoque)
             if sucesso:
-                # Exibir a mensagem de sucesso antes de limpar os campos
+                # Exibir apenas a mensagem de sucesso
                 mensagem.text = "Medicamento cadastrado com sucesso!"
                 mensagem.color = "green"
                 page.update()  # Atualiza a página para exibir a mensagem de sucesso
@@ -63,10 +63,10 @@ def pagina_medicamento(page: ft.Page, pagina_inicial, pagina_estoque, pagina_rel
                 quantidade_medicamento.value = ""
                 page.update()  # Atualiza a página novamente após limpar os campos
             else:
-                # Atualizar a mensagem de erro
-                mensagem.text = "Erro ao cadastrar medicamento."
+                # Caso o cadastro falhe
+                mensagem.Text = "Erro ao cadastrar medicamento."
                 mensagem.color = "red"
-                page.update()  # Atualiza a página para exibir a mensagem de erro
+                page.update()
         except Exception as ex:
             # Atualizar a mensagem de erro com a exceção
             mensagem.text = f"Erro ao cadastrar medicamento: {str(ex)}"

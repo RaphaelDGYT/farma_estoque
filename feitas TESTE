@@ -1,0 +1,33 @@
+[33m1ed431a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/download-planilha[m[33m, [m[1;31morigin/feature/download-planilha[m[33m)[m feat: Adicionando exportação de dados à planilha e realizando download da mesma
+[33maf1c51e[m[33m ([m[1;31morigin/atualizacao-cadastro_medicamento[m[33m)[m Atualização do cadastro de medicamento
+[33mcb8b089[m[33m ([m[1;31morigin/ajuste-cadastro_medicamento[m[33m, [m[1;32majuste-cadastro_medicamento[m[33m)[m Correção da página de cadastro
+[33m08e34ab[m[33m ([m[1;31morigin/correção_pagina-login[m[33m, [m[1;32mcorreção_pagina-login[m[33m)[m Correção da página de login
+[33m5911496[m[33m ([m[1;31morigin/bugfix/cadastro[m[33m, [m[1;32mbugfix/cadastro[m[33m)[m Correção de bug no cadastro de medicamentos
+[33m283dbe8[m[33m ([m[1;31morigin/feature/estoque-filtros[m[33m, [m[1;32mfeature/estoque-filtros[m[33m)[m feat: adicionando filtros de estoque por quantidade
+[33m35b4f5b[m[33m ([m[1;31morigin/feature/relatorio-geral-filtros[m[33m)[m feat: adicionando model relatorio, para gerar relatorio geral e filtrado
+[33m8238023[m[33m ([m[1;31morigin/feature/remove-medicamento[m[33m, [m[1;32mfeature/remove-medicamento[m[33m)[m fix: enviando correção e remoção do .env no repositório remoto
+[33m6bc80b7[m feat: Funções de remoção e deleção de medicamento adicionadas ao arquivo remove_model.py
+[33m5e680d0[m[33m ([m[1;31morigin/feature/cadastro-medicamento[m[33m)[m refactor: Reajustando a forma de consulta no cadastro de medicamento
+[33m478bedd[m tirando arquivos de stage
+[33mb0b4b3e[m feat: Adicionando função de cadastro de medicamento no arquivo medicamento.py
+[33ma422ee4[m resolvendo conflitos
+[33m44f455b[m[33m ([m[1;31morigin/bugfix/resolucao-conflito-pull[m[33m)[m enviando arquivos para resolução de conflito
+[33ma048d18[m[33m ([m[1;31morigin/task-atualizacao-interface[m[33m)[m Merge pull request #5 from RaphaelDGYT/feature/pagina-login
+[33mc397cb9[m resolvendo conflitos de merge
+[33m9aec481[m[33m ([m[1;32mtask-atualizacao-interface[m[33m)[m atualização do Design
+[33mc791fb2[m[33m ([m[1;31morigin/feature/pagina-login[m[33m)[m feat: Adicionando conectores DB, função valida_usuario e gitignore
+[33m9a4de4a[m[33m ([m[1;31morigin/alpha[m[33m)[m Merge branch 'alpha' of https://github.com/RaphaelDGYT/farma_estoque into alpha
+[33m06c46c4[m refactor: Excluindo mensagem teste do README.md
+[33m5232c67[m refactor: Excluindo mensagem teste do README.md
+[33mad2434e[m Merge pull request #3 from RaphaelDGYT/minhas-atualizacoes
+[33mc2f0c46[m[33m ([m[1;31morigin/minhas-atualizacoes[m[33m)[m atualizãção da interface
+[33m6ec1c20[m Merge branch 'alpha' of https://github.com/RaphaelDGYT/farma_estoque into alpha
+[33ma50284b[m Merge pull request #1 from RaphaelDGYT/main
+[33m9f1ff36[m Merge branch 'main' of https://github.com/RaphaelDGYT/farma_estoque into alpha
+[33m1ee7f3d[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m Atualizando a página inicial e a página de login
+[33m6bfd606[m Atualizando README.md para teste
+[33m71e0e51[m[33m ([m[1;31morigin/beta[m[33m)[m enviando arquivo = pagina_login
+[33m9aad683[m Alterações feitas TESTE
+[33m1ed34e6[m Teste de conflito
+[33maa29d82[m Update README.md
+[33m8f4e544[m Primeiro commit (adição do template
