@@ -2,6 +2,8 @@ import sys
 import os
 import flet as ft
 import mysql.connector as mysql
+from model.estoque_filtro import Estoque
+import pandas as pd
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from config import DB
@@ -14,32 +16,36 @@ def pagina_estoque(page: ft.Page, pagina_inicial, pagina_medicamento, pagina_rel
     def voltar_para_inicial(e):
         page.clean()
         pagina_inicial(page, pagina_medicamento, pagina_estoque, pagina_relatorio)
-
-    def buscar_medicamento(registro_ms):
+        
+    def buscar_medicamento_por_codigo(id):
+        if not id.isdigit():
+            nome_medicamento.value = "Informe Código de Barras válido."
+            page.update()
+            return
         try:
-            registro_ms = registro_ms.strip()
-
             banco = DB()
             cursor = banco.conexao_db()
-
-            cursor.execute("SELECT * FROM medicamento WHERE reg_ms = %s", [registro_ms])
+            cursor.execute("SELECT * FROM medicamento WHERE cod_barras = %s", [id])
             resultado = cursor.fetchone()
-
             banco.fechar_conexao()
-
             if resultado:
                 nome_medicamento.value = f"Medicamento encontrado: {resultado[1]}"
                 medicamentos_tabela.rows.clear()
-                medicamentos_tabela.rows.append(ft.DataRow(cells=[ft.DataCell(ft.Text(resultado[5])),
-                                                                  ft.DataCell(ft.Text(resultado[1])),
-                                                                  ft.DataCell(ft.Text(str(resultado[8])))]))
-                page.update()
+                medicamentos_tabela.rows.append(ft.DataRow(cells=[  # Preenche as linhas da tabela
+                    criar_celula_conteudo(resultado[1]),
+                    criar_celula_conteudo(resultado[2]),
+                    criar_celula_conteudo(resultado[3]),
+                    criar_celula_conteudo(resultado[4]),
+                    criar_celula_conteudo(resultado[5]),
+                    criar_celula_conteudo(resultado[6]),
+                    criar_celula_conteudo(resultado[7]),
+                    criar_celula_conteudo(resultado[8]),
+                ]))
             else:
-                nome_medicamento.value = f"Medicamento com Registro MS {registro_ms} não encontrado"
-                page.update()
-
+                nome_medicamento.value = "Medicamento não encontrado."
         except mysql.Error as e:
-            print(f"Erro ao buscar medicamento: {e}")
+            nome_medicamento.value = f"Erro ao buscar medicamento: {e}"
+        page.update()
 
     def carregar_todos_medicamentos():
         try:
@@ -47,127 +53,171 @@ def pagina_estoque(page: ft.Page, pagina_inicial, pagina_medicamento, pagina_rel
             cursor = banco.conexao_db()
             cursor.execute("SELECT * FROM medicamento")
             resultados = cursor.fetchall()
-
             banco.fechar_conexao()
-
             medicamentos_tabela.rows.clear()
             for resultado in resultados:
-                medicamentos_tabela.rows.append(ft.DataRow(cells=[ft.DataCell(ft.Text(str(resultado[5]))),
-                                                                  ft.DataCell(ft.Text(resultado[1])),
-                                                                  ft.DataCell(ft.Text(str(resultado[8])))]))
-            page.update()
+                medicamentos_tabela.rows.append(ft.DataRow(cells=[  # Preenche as linhas da tabela
+                    criar_celula_conteudo(resultado[1]),
+                    criar_celula_conteudo(resultado[2]),
+                    criar_celula_conteudo(resultado[3]),
+                    criar_celula_conteudo(resultado[4]),
+                    criar_celula_conteudo(resultado[5]),
+                    criar_celula_conteudo(resultado[6]),
+                    criar_celula_conteudo(resultado[7]),
+                    criar_celula_conteudo(resultado[8]),
+                ]))
         except mysql.Error as e:
-            print(f"Erro ao carregar medicamentos: {e}")
+            nome_medicamento.value = f"Erro ao carregar medicamentos: {e}"
+        page.update()
+
+    def alterar_estoque(id, quantidade, excluir=False):
+        try:
+            banco = DB()
+            cursor = banco.conexao_db()
+            if excluir:
+                cursor.execute("DELETE FROM medicamento WHERE cod_barras = %s", [id])
+            else:
+                cursor.execute(
+                    "UPDATE medicamento SET estoque = estoque + %s WHERE cod_barras = %s",
+                    (quantidade, id)
+                )
+            banco.conn.commit()
+            banco.fechar_conexao()
+            return True
+        except mysql.Error as e:
+            nome_medicamento.value = f"Erro ao alterar estoque: {e}"
+            page.update()
+            return False
 
     def atualizar_estoque(e):
-        reg_ms = reg_ms_field.value
-        quantidade = quantidade_field.value
-
-        if quantidade.isdigit():
-            quantidade = int(quantidade)
-            if atualizar_estoque_no_banco(reg_ms, quantidade):
-                nome_medicamento.value = f"Estoque alterado para: {quantidade} unidades."
-            else:
-                nome_medicamento.value = "Erro ao alterar o estoque."
-        else:
+        cod_barras = pesquisa_field.value.strip()
+        quantidade = quantidade_field.value.strip()
+        if not quantidade.isdigit():
             nome_medicamento.value = "Quantidade inválida."
-
-        reg_ms_field.value = ""
+            page.update()
+            return
+        if alterar_estoque(cod_barras, int(quantidade)):
+            nome_medicamento.value = f"Estoque atualizado: +{quantidade} unidades."
+        pesquisa_field.value = ""
         quantidade_field.value = ""
-        page.update()
+        carregar_todos_medicamentos()
 
     def excluir_estoque(e):
-        reg_ms = reg_ms_field.value
-        if excluir_medicamento(reg_ms):
-            nome_medicamento.value = f"Medicamento com Registro MS {reg_ms} excluído."
-        else:
-            nome_medicamento.value = "Erro ao excluir medicamento."
+        id = pesquisa_field.value.strip()
+        if alterar_estoque(id, 0, excluir=True):
+            nome_medicamento.value = f"Medicamento com Código de Barras {id} excluído."
+        pesquisa_field.value = ""
+        carregar_todos_medicamentos()
 
-        reg_ms_field.value = ""
-        quantidade_field.value = ""
-        page.update()
+    def aplicar_filtro(e):
+        if not pesquisa_field.value.isdigit():
+            nome_medicamento.value = "Filtro não aplicado."
+            page.update()
+            return
 
-    def atualizar_estoque_no_banco(reg_ms, quantidade):
+        estoque = Estoque()
+        filtro_selecionado = None
+        for radio in formulario.controls[0].controls:
+            if radio.value == "Maior quantidade de estoque" and radio.checked:
+                filtro_selecionado = "maior"
+            elif radio.value == "Menor quantidade de estoque" and radio.checked:
+                filtro_selecionado = "menor"
+            elif radio.value == "Mesma quantidade de estoque" and radio.checked:
+                filtro_selecionado = "igual"
+
+        if filtro_selecionado is None:
+            nome_medicamento.value = "Selecione um filtro."
+            page.update()
+            return
+
         try:
-            banco = DB()
-            cursor = banco.conexao_db()
-            cursor.execute("UPDATE medicamento SET estoque = estoque + %s WHERE reg_ms = %s", (quantidade, reg_ms))
-            banco.conn.commit()
-            banco.fechar_conexao()
-            return True
-        except mysql.Error as e:
-            print(f"Erro ao atualizar estoque: {e}")
-            return False
+            if filtro_selecionado == "maior":
+                tabela_filtrada = estoque.estoque_maior_que(int(quantidade_field.value.strip()))
+            elif filtro_selecionado == "menor":
+                tabela_filtrada = estoque.estoque_menor_que(int(quantidade_field.value.strip()))
+            elif filtro_selecionado == "igual":
+                tabela_filtrada = estoque.estoque_igual(int(quantidade_field.value.strip()))
 
-    def excluir_medicamento(reg_ms):
-        try:
-            banco = DB()
-            cursor = banco.conexao_db()
-            cursor.execute("DELETE FROM medicamento WHERE reg_ms = %s", [reg_ms])
-            banco.conn.commit()
-            banco.fechar_conexao()
-            return True
-        except mysql.Error as e:
-            print(f"Erro ao excluir medicamento: {e}")
-            return False
+            medicamentos_tabela.rows.clear()
+            if isinstance(tabela_filtrada, pd.DataFrame) and not tabela_filtrada.empty:
+                for _, resultado in tabela_filtrada.iterrows():
+                    medicamentos_tabela.rows.append(ft.DataRow(cells=[  # Preenche as linhas da tabela
+                        criar_celula_conteudo(resultado['Nome']),
+                        criar_celula_conteudo(resultado['Laboratório']),
+                        criar_celula_conteudo(resultado['Lista Adendo']),
+                        criar_celula_conteudo(resultado['Lote']),
+                        criar_celula_conteudo(resultado['Registro MS']),
+                        criar_celula_conteudo(resultado['Validade']),
+                        criar_celula_conteudo(resultado['Código de Barras']),
+                        criar_celula_conteudo(resultado['Estoque']),
+                    ]))
+            else:
+                nome_medicamento.value = "Nenhum medicamento encontrado com os critérios selecionados."
 
-    title_container = ft.Container(
-        content=ft.Text("Gerenciamento de Estoque", size=24, weight="bold", color="white"),
-        bgcolor="#2e3bc8",
-        padding=ft.padding.all(10),
-        alignment=ft.Alignment(0, 0)
-    )
+            page.update()
 
-    reg_ms_field = ft.TextField(label="Registro MS", width=300, bgcolor="white")
+        except Exception as e:
+            nome_medicamento.value = f"Erro ao aplicar filtro: {e}"
+            page.update()
+
+    def criar_celula_conteudo(conteudo):
+        return ft.DataCell(ft.Text(str(conteudo), size=12))  
+
+    pesquisa_field = ft.TextField(label="Código de Barras", width=300, bgcolor="white")
     quantidade_field = ft.TextField(label="Quantidade", width=300, bgcolor="white")
     nome_medicamento = ft.Text("", size=16, color="white")
 
     medicamentos_tabela = ft.DataTable(
-        columns=[ft.DataColumn(ft.Text("Registro MS")),
-                 ft.DataColumn(ft.Text("Nome do Medicamento")),
-                 ft.DataColumn(ft.Text("Quantidade"))],
+        columns=[
+            ft.DataColumn(ft.Text("Nome", size=14)),
+            ft.DataColumn(ft.Text("Laboratório", size=14)),
+            ft.DataColumn(ft.Text("Lista Adendo", size=14)),
+            ft.DataColumn(ft.Text("Lote", size=14)),
+            ft.DataColumn(ft.Text("Registro MS", size=14)),
+            ft.DataColumn(ft.Text("Validade", size=14)),
+            ft.DataColumn(ft.Text("Código de Barras", size=14)),
+            ft.DataColumn(ft.Text("Estoque", size=14)),
+        ],
         rows=[],
         bgcolor="#f0f0f0",
-        width=800
+        width=900,  
+        column_spacing=10,  
     )
-
-    buscar_button = ft.ElevatedButton("Buscar Medicamento", on_click=lambda e: buscar_medicamento(reg_ms_field.value.strip()))
 
     formulario = ft.Column(
-        controls=[reg_ms_field,
-                  buscar_button,
-                  nome_medicamento,
-                  quantidade_field,
-                  ft.ElevatedButton("Alterar Estoque", on_click=atualizar_estoque, bgcolor="#2e3bc8", color="white"),
-                  ft.ElevatedButton("Excluir Estoque", on_click=excluir_estoque, bgcolor="#2e3bc8", color="white"),
-                  ft.ElevatedButton("Voltar", on_click=voltar_para_inicial, bgcolor="#2e3bc8", color="white")],
+        controls=[
+            ft.Text("Selecione uma Opção de filtragem:"),
+            ft.RadioGroup(content=ft.Column([  # Corrigido: Agrupamento de filtros
+                ft.Radio(value="Maior quantidade de estoque", label="Maior quantidade de estoque"),
+                ft.Radio(value="Menor quantidade de estoque", label="Menor quantidade de estoque"),
+                ft.Radio(value="Mesma quantidade de estoque", label="Mesma quantidade de estoque")
+            ]), on_change=lambda e: nome_medicamento.update(f"O filtro escolhido é {e.control.value}")),
+            pesquisa_field,
+            ft.Row([
+                ft.ElevatedButton("Buscar", on_click=lambda e: buscar_medicamento_por_codigo(pesquisa_field.value.strip())),
+                ft.ElevatedButton("Filtrar", on_click=aplicar_filtro),
+                ft.ElevatedButton("Voltar", on_click=voltar_para_inicial)
+            ]),
+            nome_medicamento,
+            quantidade_field,
+            ft.ElevatedButton("Adicionar Estoque", on_click=atualizar_estoque),
+            ft.ElevatedButton("Excluir Estoque", on_click=excluir_estoque),
+        ],
         alignment=ft.MainAxisAlignment.START,
-        spacing=10,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER
+        spacing=10
     )
 
-    content_container = ft.Container(
-        content=formulario,
-        alignment=ft.Alignment(0, 0),
-        padding=ft.padding.all(20),
-        width=300
+    page.add(
+        ft.Container(
+            content=ft.Row(
+                controls=[medicamentos_tabela, formulario],
+                alignment=ft.MainAxisAlignment.START,
+                spacing=20,
+            ),
+            padding=10,
+            width=page.width,
+            height=page.height
+        )
     )
-
-    tabela_container = ft.Container(
-        content=medicamentos_tabela,
-        alignment=ft.Alignment(-1, 0),  # Alinha para a extrema esquerda
-        padding=ft.padding.all(0),      # Sem padding
-        margin=ft.margin.only(left=0),  # Sem margem
-        width=600
-    )
-
-    row_layout = ft.Row(
-        controls=[tabela_container, content_container],
-        alignment=ft.MainAxisAlignment.CENTER,
-        spacing=30
-    )
-
-    page.add(title_container)
-    page.add(row_layout)
 
     carregar_todos_medicamentos()
