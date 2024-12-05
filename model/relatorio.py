@@ -4,15 +4,7 @@ import pandas as pd
 import datetime as datetime
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from config import DB
-
-# Formatando a data para devolver apenas ano e mês
-def tratamento_data(data=list()):
-    data_formatada = []
-    for i in data:
-        i = i.strftime("%Y/%m/%d")
-        i = i[:7]
-        data_formatada.append(i)
-    return data_formatada
+from controler.utils_model import tratamento_data, converter_df
 
 class Relatorio():
     def __init__(self):
@@ -24,7 +16,7 @@ class Relatorio():
         
     def relatorio(self):
         self.df["Validade"] = tratamento_data(self.df["Validade"])
-        return self.df
+        return converter_df(self.df)
     
     def relatorio_filtrado(self, filtro, dado):
         coluna = ["Código Produto", "Descrição Produto", "Laboratório", "Lista/Adendo", "Lote", "Registro MS", "Validade", "Código de barras", "Estoque"]
@@ -35,6 +27,6 @@ class Relatorio():
             if dado in tabela_dados:
                 self.df["Validade"] = tratamento_data(self.df["Validade"])
                 tabela_filtrada = self.df[self.df[filtro] == dado]
-                return tabela_filtrada
+                return converter_df(tabela_filtrada)
             else:
                 return print("Dado não encontrado!")

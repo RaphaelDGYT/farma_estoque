@@ -3,20 +3,22 @@ import sys
 import mysql.connector as mysql
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from config import DB
+from model.movimentacao import Movimentacao
 
-def retirar_medicamento(reg_ms=None, cod_barras=None, quantidade=1):
-    if reg_ms is None and cod_barras is None:
+def retirar_medicamento(reg_ms=None, id=None, quantidade=1):
+    if reg_ms is None and id is None:
         return False
     elif reg_ms is None:
         try:
             banco = DB()
             cursor = banco.conexao_db()
-            cursor.execute("SELECT estoque FROM medicamento WHERE cod_barras = %s", [cod_barras])
+            cursor.execute("SELECT estoque FROM medicamento WHERE id = %s", [id])
             consulta = cursor.fetchone()
             if consulta:
                 estoque = consulta[0]
                 if estoque >= quantidade:
-                    cursor.execute("UPDATE medicamento SET estoque = estoque - %s WHERE cod_barras = %s", (quantidade, cod_barras))
+                    cursor.execute("UPDATE medicamento SET estoque = estoque - %s WHERE id = %s", (quantidade, id))
+                    Movimentacao(id).registro_saida(quantidade)
                     banco.conn.commit()
                     Movimentacao(id=id).registro_saida(quantidade)
                     return True
@@ -28,7 +30,7 @@ def retirar_medicamento(reg_ms=None, cod_barras=None, quantidade=1):
             return False
         finally:
             banco.fechar_conexao()
-    elif cod_barras is None:
+    elif id is None:
         try:
             banco = DB()
             cursor = banco.conexao_db()
@@ -39,6 +41,7 @@ def retirar_medicamento(reg_ms=None, cod_barras=None, quantidade=1):
                 estoque = consulta[0]
                 if estoque >= quantidade:
                     cursor.execute("UPDATE medicamento SET estoque = estoque - %s WHERE reg_ms = %s", (quantidade, reg_ms))
+                    Movimentacao(reg_ms).registro_saida(quantidade)
                     banco.conn.commit()
                     return True
                 else:
@@ -50,25 +53,27 @@ def retirar_medicamento(reg_ms=None, cod_barras=None, quantidade=1):
         finally:
             banco.fechar_conexao()
 
-def deletar_medicamento(reg_ms=None, cod_barras=None):
-    if reg_ms is None and cod_barras is None:
+def deletar_medicamento(reg_ms=None, id=None):
+    if reg_ms is None and id is None:
         return False
     elif reg_ms is None:
         try:
             banco = DB()
             cursor = banco.conexao_db()
-            cursor.execute("DELETE FROM medicamento WHERE cod_barras = %s", [cod_barras])
+            cursor.execute("DELETE FROM medicamento WHERE id = %s", [id])
+            Movimentacao(id).registro_exclusao()
             banco.conn.commit()
             return True
         except mysql.Error:
             return False
         finally:
             banco.fechar_conexao()
-    elif cod_barras is None:
+    elif id is None:
         try:
             banco = DB()
             cursor = banco.conexao_db()
             cursor.execute("DELETE FROM medicamento WHERE reg_ms = %s", [reg_ms])
+            Movimentacao(reg_ms).registro_exclusao
             banco.conn.commit()
             return True
         except mysql.Error:
