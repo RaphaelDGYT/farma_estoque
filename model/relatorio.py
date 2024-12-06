@@ -14,9 +14,12 @@ class Relatorio():
         self.df = pd.DataFrame(self.cursor.fetchall())
         self.df.columns = ["Código Produto", "Descrição Produto", "Laboratório", "Lista/Adendo", "Lote", "Registro MS", "Validade", "Código de barras", "Estoque"]
         
-    def relatorio(self):
+    def relatorio(self, condicao=True):
         self.df["Validade"] = tratamento_data(self.df["Validade"])
-        return converter_df(self.df)
+        if condicao:
+            return converter_df(self.df)
+        else:
+            return self.df
     
     def relatorio_filtrado(self, filtro, dado):
         coluna = ["Código Produto", "Descrição Produto", "Laboratório", "Lista/Adendo", "Lote", "Registro MS", "Validade", "Código de barras", "Estoque"]

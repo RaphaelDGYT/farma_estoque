@@ -2,11 +2,12 @@ import sys
 import os
 import flet as ft
 import mysql.connector as mysql
-from model.estoque_filtro import Estoque
 import pandas as pd
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from config import DB
+from model.relatorio import Relatorio
+from model.estoque_filtro import Estoque
+from controler.remove_model import retirar_medicamento, deletar_medicamento
 
 def pagina_estoque(page: ft.Page, pagina_inicial, pagina_medicamento, pagina_relatorio):
     page.title = "Gerenciamento de Estoque"
@@ -19,26 +20,22 @@ def pagina_estoque(page: ft.Page, pagina_inicial, pagina_medicamento, pagina_rel
         
     def buscar_medicamento_por_codigo(id):
         if not id.isdigit():
-            nome_medicamento.value = "Informe Código de Barras válido."
+            nome_medicamento.value = "Informe um valor válido."
             page.update()
             return
         try:
-            banco = DB()
-            cursor = banco.conexao_db()
-            cursor.execute("SELECT * FROM medicamento WHERE cod_barras = %s", [id])
-            resultado = cursor.fetchone()
-            banco.fechar_conexao()
+            resultado = Relatorio().relatorio_filtrado("Código Produto", id)
             if resultado:
                 nome_medicamento.value = f"Medicamento encontrado: {resultado[1]}"
                 medicamentos_tabela.rows.clear()
                 medicamentos_tabela.rows.append(ft.DataRow(cells=[  # Preenche as linhas da tabela
+                    criar_celula_conteudo(resultado[0]),
                     criar_celula_conteudo(resultado[1]),
                     criar_celula_conteudo(resultado[2]),
                     criar_celula_conteudo(resultado[3]),
                     criar_celula_conteudo(resultado[4]),
                     criar_celula_conteudo(resultado[5]),
                     criar_celula_conteudo(resultado[6]),
-                    criar_celula_conteudo(resultado[7]),
                     criar_celula_conteudo(resultado[8]),
                 ]))
             else:
@@ -49,54 +46,43 @@ def pagina_estoque(page: ft.Page, pagina_inicial, pagina_medicamento, pagina_rel
 
     def carregar_todos_medicamentos():
         try:
-            banco = DB()
-            cursor = banco.conexao_db()
-            cursor.execute("SELECT * FROM medicamento")
-            resultados = cursor.fetchall()
-            banco.fechar_conexao()
+            resultados = Relatorio().relatorio()
             medicamentos_tabela.rows.clear()
             for resultado in resultados:
                 medicamentos_tabela.rows.append(ft.DataRow(cells=[  # Preenche as linhas da tabela
+                    criar_celula_conteudo(resultado[0]),
                     criar_celula_conteudo(resultado[1]),
                     criar_celula_conteudo(resultado[2]),
                     criar_celula_conteudo(resultado[3]),
                     criar_celula_conteudo(resultado[4]),
                     criar_celula_conteudo(resultado[5]),
                     criar_celula_conteudo(resultado[6]),
-                    criar_celula_conteudo(resultado[7]),
                     criar_celula_conteudo(resultado[8]),
                 ]))
-        except mysql.Error as e:
-            nome_medicamento.value = f"Erro ao carregar medicamentos: {e}"
+        except:
+            nome_medicamento.value = f"Erro ao carregar medicamento!"
         page.update()
 
     def alterar_estoque(id, quantidade, excluir=False):
         try:
-            banco = DB()
-            cursor = banco.conexao_db()
             if excluir:
-                cursor.execute("DELETE FROM medicamento WHERE cod_barras = %s", [id])
+                deletar_medicamento(id=id)
             else:
-                cursor.execute(
-                    "UPDATE medicamento SET estoque = estoque + %s WHERE cod_barras = %s",
-                    (quantidade, id)
-                )
-            banco.conn.commit()
-            banco.fechar_conexao()
+                retirar_medicamento(id=id, quantidade=quantidade)
             return True
-        except mysql.Error as e:
-            nome_medicamento.value = f"Erro ao alterar estoque: {e}"
+        except:
+            nome_medicamento.value = f"Erro ao alterar estoque!"
             page.update()
             return False
 
     def atualizar_estoque(e):
-        cod_barras = pesquisa_field.value.strip()
+        id = pesquisa_field.value.strip()
         quantidade = quantidade_field.value.strip()
         if not quantidade.isdigit():
             nome_medicamento.value = "Quantidade inválida."
             page.update()
             return
-        if alterar_estoque(cod_barras, int(quantidade)):
+        if alterar_estoque(id, int(quantidade)):
             nome_medicamento.value = f"Estoque atualizado: +{quantidade} unidades."
         pesquisa_field.value = ""
         quantidade_field.value = ""
@@ -139,16 +125,16 @@ def pagina_estoque(page: ft.Page, pagina_inicial, pagina_medicamento, pagina_rel
                 tabela_filtrada = estoque.estoque_igual(int(quantidade_field.value.strip()))
 
             medicamentos_tabela.rows.clear()
-            if isinstance(tabela_filtrada, pd.DataFrame) and not tabela_filtrada.empty:
-                for _, resultado in tabela_filtrada.iterrows():
+            if tabela_filtrada:
+                for _, resultado in tabela_filtrada:
                     medicamentos_tabela.rows.append(ft.DataRow(cells=[  # Preenche as linhas da tabela
+                        criar_celula_conteudo(resultado['Código Produto']),
                         criar_celula_conteudo(resultado['Nome']),
                         criar_celula_conteudo(resultado['Laboratório']),
                         criar_celula_conteudo(resultado['Lista Adendo']),
                         criar_celula_conteudo(resultado['Lote']),
                         criar_celula_conteudo(resultado['Registro MS']),
                         criar_celula_conteudo(resultado['Validade']),
-                        criar_celula_conteudo(resultado['Código de Barras']),
                         criar_celula_conteudo(resultado['Estoque']),
                     ]))
             else:
@@ -163,19 +149,19 @@ def pagina_estoque(page: ft.Page, pagina_inicial, pagina_medicamento, pagina_rel
     def criar_celula_conteudo(conteudo):
         return ft.DataCell(ft.Text(str(conteudo), size=12))  
 
-    pesquisa_field = ft.TextField(label="Código de Barras", width=300, bgcolor="white")
+    pesquisa_field = ft.TextField(label="Código Produto", width=300, bgcolor="white")
     quantidade_field = ft.TextField(label="Quantidade", width=300, bgcolor="white")
     nome_medicamento = ft.Text("", size=16, color="white")
 
     medicamentos_tabela = ft.DataTable(
         columns=[
-            ft.DataColumn(ft.Text("Nome", size=14)),
+            ft.DataColumn(ft.Text("Código Produto", size=14)),
+            ft.DataColumn(ft.Text("Descrição", size=14)),
             ft.DataColumn(ft.Text("Laboratório", size=14)),
             ft.DataColumn(ft.Text("Lista Adendo", size=14)),
             ft.DataColumn(ft.Text("Lote", size=14)),
             ft.DataColumn(ft.Text("Registro MS", size=14)),
             ft.DataColumn(ft.Text("Validade", size=14)),
-            ft.DataColumn(ft.Text("Código de Barras", size=14)),
             ft.DataColumn(ft.Text("Estoque", size=14)),
         ],
         rows=[],

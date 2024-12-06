@@ -1,7 +1,6 @@
 import os
 import sys
 import mysql.connector as mysql
-import pandas as pd
 from datetime import datetime
 from pytz import timezone
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))

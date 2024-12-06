@@ -24,7 +24,7 @@ class RelatorioExcel(Relatorio):
         
     def planilha(self):
         # Adicionando dados da coluna "Registro MS" em uma lista para ser formatada
-        tabela = super().relatorio()
+        tabela = super().relatorio(False)
         registro = []
         for i in tabela["Registro MS"]:
             formart_number = f"{i[:1]}.{i[1:5]}.{i[5:9]}.{i[9:12]}-{i[12:]}"

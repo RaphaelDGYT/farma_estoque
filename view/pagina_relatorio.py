@@ -7,7 +7,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Importando a classe RelatorioExcel do controller
 from controler.download_planilha import RelatorioExcel as excel
-from config import DB
+from model.relatorio import Relatorio
 
 def pagina_relatorio(page: ft.Page, pagina_inicial, pagina_medicamento, pagina_estoque):
     page.title = "Relatório - Controle de Medicamentos"
@@ -18,28 +18,27 @@ def pagina_relatorio(page: ft.Page, pagina_inicial, pagina_medicamento, pagina_e
         page.clean()
         pagina_inicial(page, pagina_medicamento, pagina_estoque, pagina_relatorio)
 
+    def criar_celula_conteudo(conteudo):
+        return ft.DataCell(ft.Text(str(conteudo), size=12))
+    
     def carregar_todos_medicamentos():
         try:
-            banco = DB()
-            cursor = banco.conexao_db()
-            cursor.execute("SELECT * FROM medicamento")
-            resultados = cursor.fetchall()
-            banco.fechar_conexao()
+            resultados = Relatorio.relatorio()
             medicamentos_tabela.rows.clear()
             for resultado in resultados:
                 medicamentos_tabela.rows.append(ft.DataRow(cells=[
-                    ft.DataCell(ft.Text(str(resultado[1]))), 
-                    ft.DataCell(ft.Text(resultado[2])),      
-                    ft.DataCell(ft.Text(resultado[3])),     
-                    ft.DataCell(ft.Text(str(resultado[4]))),  
-                    ft.DataCell(ft.Text(str(resultado[5]))),
-                    ft.DataCell(ft.Text(str(resultado[6]))),
-                    ft.DataCell(ft.Text(str(resultado[7]))),
-                    ft.DataCell(ft.Text(str(resultado[8]))),
+                    criar_celula_conteudo(resultado[1]),
+                    criar_celula_conteudo(resultado[2]),
+                    criar_celula_conteudo(resultado[3]),
+                    criar_celula_conteudo(resultado[4]),
+                    criar_celula_conteudo(resultado[5]),
+                    criar_celula_conteudo(resultado[6]),
+                    criar_celula_conteudo(resultado[7]),
+                    criar_celula_conteudo(resultado[8]),
                 ]))
                 
-        except mysql.Error as e:
-            status_mensagem.content.value = f"Erro ao carregar medicamentos: {e}"
+        except:
+            status_mensagem.content.value = f"Erro ao carregar medicamentos!"
         page.update()
 
     # Função para exportar o relatório
@@ -109,6 +108,6 @@ def pagina_relatorio(page: ft.Page, pagina_inicial, pagina_medicamento, pagina_e
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         spacing=20
     )
-
-    page.add(layout_principal)
     carregar_todos_medicamentos()
+    page.add(layout_principal)
+    
