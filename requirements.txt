@@ -1,0 +1,6 @@
+mysql-connector-python==9.1.0
+flet==0.25.1
+pandas==2.2.3
+pytz==2024.2
+openpyxl==3.1.5
+cx_freeze==7.2.7
