@@ -15,11 +15,11 @@ class DB():
     def __init__(self):
         try:
             self.conn = mysql.connect(
-                host = host,
-                user = user,
-                password = password,
-                database = database,
-                port = port)
+                host=host,
+                user=user,
+                password=password,
+                database=database,
+                port=port)
             self.cursor = self.conn.cursor()
         except mysql.Error as error:
             return "Erro ao conectar ao banco de dados", error
