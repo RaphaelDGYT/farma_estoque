@@ -2,9 +2,7 @@ import sys
 import os
 import flet as ft
 import mysql.connector as mysql
-import pandas as pd
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from config import DB
 from model.relatorio import Relatorio
 from model.estoque_filtro import Estoque
 from controler.remove_model import retirar_medicamento, deletar_medicamento
@@ -95,56 +93,6 @@ def pagina_estoque(page: ft.Page, pagina_inicial, pagina_medicamento, pagina_rel
         pesquisa_field.value = ""
         carregar_todos_medicamentos()
 
-    def aplicar_filtro(e):
-        if not pesquisa_field.value.isdigit():
-            nome_medicamento.value = "Filtro não aplicado."
-            page.update()
-            return
-
-        estoque = Estoque()
-        filtro_selecionado = None
-        for radio in formulario.controls[0].controls:
-            if radio.value == "Maior quantidade de estoque" and radio.checked:
-                filtro_selecionado = "maior"
-            elif radio.value == "Menor quantidade de estoque" and radio.checked:
-                filtro_selecionado = "menor"
-            elif radio.value == "Mesma quantidade de estoque" and radio.checked:
-                filtro_selecionado = "igual"
-
-        if filtro_selecionado is None:
-            nome_medicamento.value = "Selecione um filtro."
-            page.update()
-            return
-
-        try:
-            if filtro_selecionado == "maior":
-                tabela_filtrada = estoque.estoque_maior_que(int(quantidade_field.value.strip()))
-            elif filtro_selecionado == "menor":
-                tabela_filtrada = estoque.estoque_menor_que(int(quantidade_field.value.strip()))
-            elif filtro_selecionado == "igual":
-                tabela_filtrada = estoque.estoque_igual(int(quantidade_field.value.strip()))
-
-            medicamentos_tabela.rows.clear()
-            if tabela_filtrada:
-                for _, resultado in tabela_filtrada:
-                    medicamentos_tabela.rows.append(ft.DataRow(cells=[  # Preenche as linhas da tabela
-                        criar_celula_conteudo(resultado['Código Produto']),
-                        criar_celula_conteudo(resultado['Nome']),
-                        criar_celula_conteudo(resultado['Laboratório']),
-                        criar_celula_conteudo(resultado['Lista Adendo']),
-                        criar_celula_conteudo(resultado['Lote']),
-                        criar_celula_conteudo(resultado['Registro MS']),
-                        criar_celula_conteudo(resultado['Validade']),
-                        criar_celula_conteudo(resultado['Estoque']),
-                    ]))
-            else:
-                nome_medicamento.value = "Nenhum medicamento encontrado com os critérios selecionados."
-
-            page.update()
-
-        except Exception as e:
-            nome_medicamento.value = f"Erro ao aplicar filtro: {e}"
-            page.update()
 
     def criar_celula_conteudo(conteudo):
         return ft.DataCell(ft.Text(str(conteudo), size=12))  
@@ -172,22 +120,14 @@ def pagina_estoque(page: ft.Page, pagina_inicial, pagina_medicamento, pagina_rel
 
     formulario = ft.Column(
         controls=[
-            ft.Text("Selecione uma Opção de filtragem:"),
-            ft.RadioGroup(content=ft.Column([  # Corrigido: Agrupamento de filtros
-                ft.Radio(value="Maior quantidade de estoque", label="Maior quantidade de estoque"),
-                ft.Radio(value="Menor quantidade de estoque", label="Menor quantidade de estoque"),
-                ft.Radio(value="Mesma quantidade de estoque", label="Mesma quantidade de estoque")
-            ]), on_change=lambda e: nome_medicamento.update(f"O filtro escolhido é {e.control.value}")),
             pesquisa_field,
-            ft.Row([
-                ft.ElevatedButton("Buscar", on_click=lambda e: buscar_medicamento_por_codigo(pesquisa_field.value.strip())),
-                ft.ElevatedButton("Filtrar", on_click=aplicar_filtro),
-                ft.ElevatedButton("Voltar", on_click=voltar_para_inicial)
-            ]),
             nome_medicamento,
             quantidade_field,
-            ft.ElevatedButton("Adicionar Estoque", on_click=atualizar_estoque),
-            ft.ElevatedButton("Excluir Estoque", on_click=excluir_estoque),
+            ft.ElevatedButton("Adicionar", on_click=atualizar_estoque),
+            ft.ElevatedButton("Excluir", on_click=excluir_estoque),
+            ft.ElevatedButton("Retirar", on_click=atualizar_estoque),
+            ft.ElevatedButton("Buscar", on_click=buscar_medicamento_por_codigo(pesquisa_field.value)),
+            ft.ElevatedButton("Voltar", on_click=voltar_para_inicial)
         ],
         alignment=ft.MainAxisAlignment.START,
         spacing=10

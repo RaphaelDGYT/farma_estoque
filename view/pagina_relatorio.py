@@ -1,7 +1,6 @@
 import sys
 import os
 import flet as ft
-import mysql.connector as mysql
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -108,6 +107,6 @@ def pagina_relatorio(page: ft.Page, pagina_inicial, pagina_medicamento, pagina_e
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         spacing=20
     )
-    carregar_todos_medicamentos()
+
     page.add(layout_principal)
-    
+    carregar_todos_medicamentos()
