@@ -45,7 +45,7 @@ Crie um pull request.<br>
 
 
 ## Agradecimentos:
-**Drogaria Nicolly LTDA:** Agradecemos à Farmácia "MatosFarma", em especial ao Gabriel Matista Matos, pela confiança em nosso trabalho e pela valiosa colaboração na coleta de dados e informações relevantes para o desenvolvimento deste sistema. A parceria com a MatosFarma foi fundamental para a obtenção de resultados práticos e significativos.<br>
+**Drogaria Nicolly LTDA:** Agradecemos à Farmácia "MatosFarma", em especial ao Gabriel Batista Matos, pela confiança em nosso trabalho e pela valiosa colaboração na coleta de dados e informações relevantes para o desenvolvimento deste sistema. A parceria com a MatosFarma foi fundamental para a obtenção de resultados práticos e significativos.<br>
 
 **Professor Edson Melo de Souza:** Expressamos nossa profunda gratidão ao professor Edson Melo de Souza pela orientação dedicada e pelo conhecimento técnico compartilhado ao longo do desenvolvimento deste projeto.<br>
 
